@@ -4,6 +4,5 @@ class strongswan {
   
   if $use_shorewall {
     include shorewall::rules::ipsec  
-    include shorewall::rules::out::ipsec  
   }
 }

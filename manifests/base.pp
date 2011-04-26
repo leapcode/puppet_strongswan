@@ -9,6 +9,13 @@ class strongswan::base {
     ensure => installed,
   }
 
+  file{'/etc/init.d/ipsec':
+    source => "puppet:///modules/strongswan/centos/ipsec.init",
+    require => Package['strongswan'],
+    before => Service['ipsec'],
+    owner => root, group => 0, mode => 0755;
+  }
+
   exec{ 'ipsec_privatekey':
     command => "certtool --generate-privkey --bits 2048 --outfile /etc/ipsec.d/private/${fqdn}.pem",
     creates => "/etc/ipsec.d/private/${fqdn}.pem",
@@ -25,7 +32,7 @@ class strongswan::base {
     content => ": RSA ${fqdn}.pem\n",
     require => Package['strongswan'],
     owner => "root", group => 0, mode => "400",
-    notify => Service['strongswan'],
+    notify => Service['ipsec'],
   }
 
   if $strongswan_cert != "false" and $strongswan_cert != "" {
@@ -34,7 +41,7 @@ class strongswan::base {
       tag => 'strongswan_cert',
       content => $strongswan_cert,
       require => Package['strongswan'],
-      notify => Service['strongswan'],
+      notify => Service['ipsec'],
     }
   }  
 
@@ -44,10 +51,10 @@ class strongswan::base {
     source => "puppet:///modules/site-strongswan/configs/${fqdn}",
     owner => "root", group => 0, mode => "400",
     require => Package['strongswan'],
-    notify => Service['strongswan'],
+    notify => Service['ipsec'],
   }
 
-  service{ 'strongswan' :
+  service{'ipsec':
     ensure => running,
     enable => true,
   }

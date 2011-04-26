@@ -16,6 +16,12 @@ class strongswan::base {
     owner => root, group => 0, mode => 0755;
   }
 
+  if $selinux == 'true' {
+    File['/etc/init.d/ipsec']{
+      seltype => 'ipsec_initrc_exec_t',
+    } 
+  }
+
   exec{ 'ipsec_privatekey':
     command => "certtool --generate-privkey --bits 2048 --outfile /etc/ipsec.d/private/${fqdn}.pem",
     creates => "/etc/ipsec.d/private/${fqdn}.pem",

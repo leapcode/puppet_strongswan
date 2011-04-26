@@ -53,7 +53,7 @@ class strongswan::base {
 
   File<<| tag == 'strongswan_cert' |>>
 
-  file{'/etc/ipsec.config':
+  file{'/etc/ipsec.conf':
     source => "puppet:///modules/site-strongswan/configs/${fqdn}",
     require => Package['strongswan'],
     notify => Service['ipsec'],

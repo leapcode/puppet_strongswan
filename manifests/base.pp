@@ -10,7 +10,7 @@ class strongswan::base {
   }
 
   exec{ 'ipsec_privatekey':
-    command => "certtool --generate-privkey --bits 2048 --outfile /etc/ipsec.d/private/${fqdn}",
+    command => "certtool --generate-privkey --bits 2048 --outfile /etc/ipsec.d/private/${fqdn}.pem",
     creates => "/etc/ipsec.d/private/${fqdn}.pem",
     require => Package['strongswan'],
   }

@@ -30,11 +30,11 @@ class strongswan::base {
 
   if $strongswan_cert != "false" and $strongswan_cert != "" {
     @@file{ "/etc/ipsec.d/certs/${fqdn}.asc":
-	owner => "root", group => 0, mode => "400",
-	tag => 'strongswan_cert',
-	content => $strongswan_cert,
-	require => Package['strongswan'],
-	notify => Service['strongswan'],
+      owner => "root", group => 0, mode => "400",
+      tag => 'strongswan_cert',
+      content => $strongswan_cert,
+      require => Package['strongswan'],
+      notify => Service['strongswan'],
     }
   }  
 

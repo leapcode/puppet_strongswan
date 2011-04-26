@@ -18,7 +18,7 @@ class strongswan::base {
   exec{ 'ipsec_monkeysphere_cert' :
     require => Exec['ipsec_privatekey'],
     creates => "/etc/ipsec.d/certs/${fqdn}.asc",
-    command => "monkeysphere-host import-key /etc/ipsec.d/private/${fqdn}.pem ike://${fqdn}"
+    command => "monkeysphere-host import-key /etc/ipsec.d/private/${fqdn}.pem ike://${fqdn} && gpg --homedir /var/lib/monkeysphere/host -a --export =ike://${fqdn} > /etc/ipsec.d/certs/${fqdn}.asc"
   }
 
   file{ '/etc/ipsec.secrets' : 

@@ -9,17 +9,10 @@ class strongswan::base {
     ensure => installed,
   }
 
-  file{'/etc/init.d/ipsec':
-    source => "puppet:///modules/strongswan/centos/ipsec.init",
-    require => Package['strongswan'],
-    before => Service['ipsec'],
-    owner => root, group => 0, mode => 0755;
-  }
-
   if $selinux == 'true' {
-    File['/etc/init.d/ipsec']{
-      seltype => 'ipsec_initrc_exec_t',
-    } 
+    package{ 'strongswan-selinux' :
+      ensure => installed,
+    }
   }
 
   exec{ 'ipsec_privatekey':

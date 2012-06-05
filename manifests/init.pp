@@ -1,8 +1,8 @@
 class strongswan {
-  
+
   include strongswan::base
-  
-  if $use_shorewall {
-    include shorewall::rules::ipsec  
+
+  if hiera('use_shorewall',false) {
+    include shorewall::rules::ipsec
   }
 }

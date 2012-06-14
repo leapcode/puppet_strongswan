@@ -2,7 +2,6 @@
 
 class strongswan::base {
 
-  require monkeysphere
   require certtool
 
   package{ 'strongswan' :

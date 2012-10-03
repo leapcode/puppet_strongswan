@@ -1,7 +1,8 @@
 # manage a strongswan
 class strongswan(
   $manage_shorewall = false,
-  $monkeysphere_publish_key = false
+  $monkeysphere_publish_key = false,
+  $ipsec_nat = false
 ) {
 
   class{'monkeysphere':
@@ -35,5 +36,9 @@ class strongswan(
 
   if $manage_shorewall {
     include shorewall::rules::ipsec
+    if $ipsec_nat {
+      include shorewall::rules::ipsec_nat
+    }
+  
   }
 }

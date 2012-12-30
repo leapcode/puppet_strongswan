@@ -1,3 +1,4 @@
+# manage a strongswan
 class strongswan(
   $manage_shorewall = false,
   $monkeysphere_publish_key = false
@@ -5,7 +6,7 @@ class strongswan(
 
   class{'monkeysphere':
     publish_key => $monkeysphere_publish_key
-  } -> class{'strongswan::base': }
+  } -> class{'certtool': } -> class{'strongswan::base': }
 
   if $manage_shorewall {
     include shorewall::rules::ipsec

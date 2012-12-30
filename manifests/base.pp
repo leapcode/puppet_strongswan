@@ -1,60 +1,60 @@
-# manifests/init.pp - module to manage strongswan/ipsec
-
+# manage strongswan services
 class strongswan::base {
 
-  require certtool
-
-  package{ 'strongswan' :
+  package{'strongswan':
     ensure => installed,
   }
 
-  if $selinux == 'true' {
-    package{ 'strongswan-selinux' :
+  if $::selinux == 'true' {
+    package{'strongswan-selinux':
       ensure => installed,
     }
   }
 
-  exec{ 'ipsec_privatekey':
-    command => "certtool --generate-privkey --bits 2048 --outfile /etc/ipsec.d/private/${::fqdn}.pem",
-    creates => "/etc/ipsec.d/private/${::fqdn}.pem",
-    require => Package['strongswan'],
+  exec{
+    'ipsec_privatekey':
+      command => "certtool --generate-privkey --bits 2048 --outfile /etc/ipsec.d/private/${::fqdn}.pem",
+      creates => "/etc/ipsec.d/private/${::fqdn}.pem",
+      require => Package['strongswan'];
+    'ipsec_monkeysphere_cert':
+      command => "monkeysphere-host import-key /etc/ipsec.d/private/${::fqdn}.pem ike://${::fqdn} && gpg --homedir /var/lib/monkeysphere/host -a --export =ike://${::fqdn} > /etc/ipsec.d/certs/${::fqdn}.asc";
+      creates => "/etc/ipsec.d/certs/${::fqdn}.asc",
+      require => Exec['ipsec_privatekey'];
   }
 
-  exec{ 'ipsec_monkeysphere_cert' :
-    require => Exec['ipsec_privatekey'],
-    creates => "/etc/ipsec.d/certs/${::fqdn}.asc",
-    command => "monkeysphere-host import-key /etc/ipsec.d/private/${::fqdn}.pem ike://${::fqdn} && gpg --homedir /var/lib/monkeysphere/host -a --export =ike://${::fqdn} > /etc/ipsec.d/certs/${::fqdn}.asc"
-  }
-
-  file{ '/etc/ipsec.secrets' : 
-    content => ": RSA ${::fqdn}.pem\n",
-    require => Package['strongswan'],
-    owner => "root", group => 0, mode => "400",
-    notify => Service['ipsec'],
-  }
-
-  if $::strongswan_cert != "false" and $::strongswan_cert != "" {
-    @@file{ "/etc/ipsec.d/certs/${::fqdn}.asc":
-      owner => "root", group => 0, mode => "400",
-      tag => 'strongswan_cert',
-      content => $::strongswan_cert,
+  file{ '/etc/ipsec.secrets':
+      content => ": RSA ${::fqdn}.pem\n",
       require => Package['strongswan'],
-      notify => Service['ipsec'],
-    }
-  }  
-
-  File<<| tag == 'strongswan_cert' |>>
-
-  file{'/etc/ipsec.conf':
-    source => "puppet:///modules/site_strongswan/configs/${::fqdn}",
-    require => Package['strongswan'],
-    notify => Service['ipsec'],
-    owner => "root", group => 0, mode => "400";
+      notify  => Service['ipsec'],
+      owner   => 'root',
+      group   => 0,
+      mode    => '0400';
+    '/etc/ipsec.conf':
+      source  => "puppet:///modules/site_strongswan/configs/${::fqdn}",
+      require => Package['strongswan'],
+      notify  => Service['ipsec'],
+      owner   => 'root',
+      group   => 0,
+      mode    => '0400';
   }
 
   service{'ipsec':
     ensure => running,
     enable => true,
   }
+
+  if $::strongswan_cert != 'false' and $::strongswan_cert != '' {
+    @@file{"/etc/ipsec.d/certs/${::fqdn}.asc":
+      tag     => 'strongswan_cert',
+      content => $::strongswan_cert,
+      require => Package['strongswan'],
+      notify  => Service['ipsec'],
+      owner   => 'root',
+      group   => 0,
+      mode    => '0400';
+    }
+  }
+
+  File<<| tag == 'strongswan_cert' |>>
 
 }

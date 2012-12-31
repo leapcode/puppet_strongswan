@@ -1,0 +1,23 @@
+config setup
+        crlcheckinterval=180
+        strictcrlpolicy=no
+        plutostart=no
+
+conn %default
+        ikelifetime=60m
+        keylife=20m
+        rekeymargin=3m
+        keyingtries=1
+        mobike=no
+        keyexchange=ikev2
+        rightsendcert=never
+        leftsendcert=never
+        left=<%= scope.lookupvar('strongswan::default_left_ip_address') %>.asc
+        leftcert=<%= scope.lookupvar('::fqdn') %>.asc
+        leftid=@<%= scope.lookupvar('::fqdn') %>
+
+<% unless scope.lookupvar('strongswan::additional_options').empty? -%>
+<%= scope.lookupvar('strongswan::additional_options') %>
+
+<% end -%>
+include <%= scope.lookupvar('strongswan::config_dir') %>/ipsec.hosts.*.conf

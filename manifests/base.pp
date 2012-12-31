@@ -12,21 +12,23 @@ class strongswan::base {
       creates => "${strongswan::config_dir}/certs/${::fqdn}.asc",
   }
 
+  File {
+    require => Package['strongswan'],
+    notify  => Service['ipsec'],
+    owner   => 'root',
+    group   => 0,
+    mode    => '0400',
+  }
+
   file{
     '/etc/ipsec.secrets':
-      content => ": RSA ${::fqdn}.pem\n",
-      require => Package['strongswan'],
-      notify  => Service['ipsec'],
-      owner   => 'root',
-      group   => 0,
-      mode    => '0400';
+      content => ": RSA ${::fqdn}.pem\n";
+    # this is needed because if the glob-include in the config
+    # doesn't find anything it fails.
+    "${strongswan::config_dir}/ipsec.hosts.__dummy__.conf":
+      ensure  => 'present';
     '/etc/ipsec.conf':
-      source  => "puppet:///modules/site_strongswan/configs/${::fqdn}",
-      require => Package['strongswan'],
-      notify  => Service['ipsec'],
-      owner   => 'root',
-      group   => 0,
-      mode    => '0400';
+      content => template('strongswan/ipsec.conf.erb');
   }
 
   service{'ipsec':

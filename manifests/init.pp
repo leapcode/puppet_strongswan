@@ -1,14 +1,16 @@
 # manage a strongswan
 class strongswan(
-  $manage_shorewall = false,
+  $manage_shorewall         = false,
   $monkeysphere_publish_key = false,
-  $ipsec_nat = false
+  $ipsec_nat                = false,
+  $default_left_ip_address  = $::ipaddress,
+  $additional_options       = ''
 ) {
 
   class{'monkeysphere':
     publish_key => $monkeysphere_publish_key
   } -> class{'certtool': }
-  
+
   case $::operatingsystem {
     centos: {
       case $::lsbmajdistrelease {
@@ -39,6 +41,5 @@ class strongswan(
     if $ipsec_nat {
       include shorewall::rules::ipsec_nat
     }
-  
   }
 }

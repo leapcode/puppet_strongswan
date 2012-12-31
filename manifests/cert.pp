@@ -1,11 +1,24 @@
 # manage a cert snippet that we want to include
-define strongswan::cert($cert) {
+define strongswan::cert(
+  $ensure = 'present',
+  $cert   = 'absent'
+) {
+  if ($cert == 'absent') and ($ensure == 'present'){
+    fail("You need to pass some \$cert content for ${name} if it should be present")
+  }
+
   file{"${strongswan::config_dir}/certs/${name}.asc":
-    content => $cert,
+    ensure  => $ensure,
     require => Package['strongswan'],
     notify  => Service['ipsec'],
-    owner   => 'root',
-    group   => 0,
-    mode    => '0400';
+  }
+
+  if $ensure == 'present' {
+    File["${strongswan::config_dir}/certs/${name}.asc"]{
+      content => $cert,
+      owner   => 'root',
+      group   => 0,
+      mode    => '0400',
+    }
   }
 }

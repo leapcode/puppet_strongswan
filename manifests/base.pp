@@ -25,7 +25,12 @@ class strongswan::base {
       content => ": RSA ${::fqdn}.pem\n";
     # this is needed because if the glob-include in the config
     # doesn't find anything it fails.
-    "${strongswan::config_dir}/ipsec.hosts.__dummy__.conf":
+    "${strongswan::config_dir}/hosts":
+      ensure => directory,
+      purge   => true,
+      force   => true,
+      recurse => true;
+    "${strongswan::config_dir}/hosts/__dummy__.conf":
       ensure  => 'present';
     '/etc/ipsec.conf':
       content => template('strongswan/ipsec.conf.erb');
@@ -36,12 +41,14 @@ class strongswan::base {
     enable => true,
   }
 
-  if $::strongswan_cert != 'false' and $::strongswan_cert != '' {
-    @@strongswan::cert{$::fqdn:
-      cert => $::strongswan_cert,
-      tag  => 'strongswan_cert'
+  if $strongswan::auto_remote_host and ($::strongswan_cert != 'false') and ($::strongswan_cert != '') {
+    # export
+    @@strongswan::remote_host{$::fqdn:
+      right_cert_content  => $::strongswan_cert,
+      right_ip_address    => $default_left_ip_address,
+      tag                 => $::fqdn
     }
+    Strongswan::Remote_Host<<| tag != $::fqdn |>>
   }
 
-  Strongswan::Cert<<| tag == 'strongswan_cert' |>>
 }

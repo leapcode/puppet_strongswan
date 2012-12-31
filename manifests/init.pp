@@ -4,7 +4,8 @@ class strongswan(
   $monkeysphere_publish_key = false,
   $ipsec_nat                = false,
   $default_left_ip_address  = $::ipaddress,
-  $additional_options       = ''
+  $additional_options       = '',
+  $auto_remote_host         = false
 ) {
 
   class{'monkeysphere':

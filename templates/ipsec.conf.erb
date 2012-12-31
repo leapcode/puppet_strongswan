@@ -20,4 +20,4 @@ conn %default
 <%= scope.lookupvar('strongswan::additional_options') %>
 
 <% end -%>
-include <%= scope.lookupvar('strongswan::config_dir') %>/ipsec.hosts.*.conf
+include <%= scope.lookupvar('strongswan::config_dir') %>/hosts/*.conf

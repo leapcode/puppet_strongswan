@@ -12,7 +12,7 @@ conn %default
         keyexchange=ikev2
         rightsendcert=never
         leftsendcert=never
-        left=<%= scope.lookupvar('strongswan::default_left_ip_address') %>.asc
+        left=<%= scope.lookupvar('strongswan::default_left_ip_address') %>
         leftcert=<%= scope.lookupvar('::fqdn') %>.asc
         leftid=@<%= scope.lookupvar('::fqdn') %>
 

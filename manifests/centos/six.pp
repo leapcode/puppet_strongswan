@@ -9,7 +9,7 @@ class strongswan::centos::six inherits strongswan::base {
     path => '/etc/strongswan/ipsec.conf'
   }
 
-  file{'/etc/selinux/strongswan':
+  file{'/etc/sysconfig/strongswan':
     content => "config='/etc/strongswan/strongswan.conf'\n",
     notify  => Service['ipsec'],
     owner   => 'root',

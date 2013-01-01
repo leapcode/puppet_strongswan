@@ -46,7 +46,7 @@ class strongswan::base {
     @@strongswan::remote_host{$::fqdn:
       right_cert_content  => $::strongswan_cert,
       right_ip_address    => $default_left_ip_address,
-      tag                 => [ $::fqdn, 'auto' ]
+      tag                 => $::fqdn
     }
     #Strongswan::Remote_Host<<| tag == 'auto' and tag != $::fqdn |>>
     Strongswan::Remote_Host<<| tag != $::fqdn |>>

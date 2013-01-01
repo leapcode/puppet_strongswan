@@ -4,7 +4,7 @@ define strongswan::remote_host(
   $ensure             = 'present',
   $right_id           = $name,
   $right_cert_name    = $name,
-  $right_cert_content = 'absent',
+  $right_cert_content = 'absent'
 ){
   file{"${strongswan::config_dir}/hosts/${name}.conf":
     ensure  => $ensure,

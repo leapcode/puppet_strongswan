@@ -1,6 +1,7 @@
 # manage a strongswan
 class strongswan(
   $manage_shorewall         = false,
+  $shorewall_source         = 'net',
   $monkeysphere_publish_key = false,
   $ipsec_nat                = false,
   $default_left_ip_address  = $::ipaddress,
@@ -38,7 +39,9 @@ class strongswan(
   }
 
   if $manage_shorewall {
-    include shorewall::rules::ipsec
+    class{'shorewall::rules::ipsec':
+      source => $strongswan::shorewall_source
+    }
     if $ipsec_nat {
       include shorewall::rules::ipsec_nat
     }

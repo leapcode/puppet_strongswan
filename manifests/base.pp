@@ -45,7 +45,8 @@ class strongswan::base {
     # export
     @@strongswan::remote_host{$::fqdn:
       right_cert_content  => $::strongswan_cert,
-      right_ip_address    => $default_left_ip_address,
+      right_ip_address    => $strongswan::default_left_ip_address,
+      right_subnet        => $strongswan::default_left_subnet,
       tag                 => $::fqdn
     }
     #Strongswan::Remote_Host<<| tag == 'auto' and tag != $::fqdn |>>

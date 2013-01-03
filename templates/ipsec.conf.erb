@@ -15,6 +15,9 @@ conn %default
         left=<%= scope.lookupvar('strongswan::default_left_ip_address') %>
         leftcert=<%= scope.lookupvar('::fqdn') %>.asc
         leftid=@<%= scope.lookupvar('::fqdn') %>
+<% unless (subn=scope.lookupvar('strongswan::default_left_subnet')).empty? -%>
+        leftsubnet=<%= subn.collect{|s| s.include?('/') ? s : (s.include?(':') ? "#{s}/128" : "#{s}/32" ) }.join(',') %>
+<% end -%>
 
 <% unless scope.lookupvar('strongswan::additional_options').empty? -%>
 <%= scope.lookupvar('strongswan::additional_options') %>

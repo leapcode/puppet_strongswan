@@ -4,7 +4,7 @@ conn <%= name %>
         rightid=@<%= right_id %>
         rightcert=<%= right_cert_name %>.asc
 <% unless right_subnet.empty? -%>
-        rightsubnet=<%= right_subnet.join(',') %>
+        rightsubnet=<%= right_subnet.collect{|s| s.include?('/') ? s : (s.include?(':') ? "#{s}/128" : "#{s}/32" ) }.join(',') %>
 <% end -%>
         type=transport
         auto=start

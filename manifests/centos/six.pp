@@ -9,6 +9,17 @@ class strongswan::centos::six inherits strongswan::base {
     path => '/etc/strongswan/ipsec.conf'
   }
 
+  file{ [ '/etc/strongswan/ipsec.d',
+          '/etc/strongswan/ipsec.d/private',
+          '/etc/strongswan/ipsec.d/certs' ]:
+    ensure  => directory,
+    require => Package['strongswan'],
+    before  => Exec['ipsec_privatekey'],
+    owner   => root,
+    group   => 0,
+    mode    => '0600';
+  }
+
   file{'/etc/sysconfig/strongswan':
     content => "config='/etc/strongswan/strongswan.conf'\n",
     notify  => Service['ipsec'],

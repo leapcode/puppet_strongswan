@@ -7,14 +7,14 @@ define strongswan::cert(
     fail("You need to pass some \$cert content for ${name} if it should be present")
   }
 
-  file{"${strongswan::config_dir}/certs/${name}.asc":
+  file{"${strongswan::cert_dir}/certs/${name}.asc":
     ensure  => $ensure,
     require => Package['strongswan'],
     notify  => Service['ipsec'],
   }
 
   if $ensure == 'present' {
-    File["${strongswan::config_dir}/certs/${name}.asc"]{
+    File["${strongswan::cert_dir}/certs/${name}.asc"]{
       content => $cert,
       owner   => 'root',
       group   => 0,

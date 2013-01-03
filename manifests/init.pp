@@ -18,12 +18,15 @@ class strongswan(
       case $::lsbmajdistrelease {
         '5': {
           $config_dir = '/etc/ipsec.d'
+          $certdir    = '/etc/ipsec.d'
+
           class{'strongswan::centos::five':
             require => Class['monkeysphere'],
           }
         }
         default: {
           $config_dir = '/etc/strongswan'
+          $certdir    = '/etc/strongswan/ipsec.d'
           class{'strongswan::centos::six':
             require => Class['monkeysphere'],
           }
@@ -32,6 +35,7 @@ class strongswan(
     }
     default: {
       $config_dir = '/etc/ipsec.d'
+      $certdir    = '/etc/ipsec.d'
       class{'strongswan::base':
         require => Class['monkeysphere'],
       }

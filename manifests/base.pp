@@ -5,12 +5,12 @@ class strongswan::base {
     ensure => installed,
   } -> exec{
     'ipsec_privatekey':
-      command => "certtool --generate-privkey --bits 2048 --outfile ${strongswan::config_dir}/private/${::fqdn}.pem",
-      creates => "${strongswan::config_dir}/private/${::fqdn}.pem";
+      command => "certtool --generate-privkey --bits 2048 --outfile ${strongswan::cert_dir}/private/${::fqdn}.pem",
+      creates => "${strongswan::cert_dir}/private/${::fqdn}.pem";
   } -> exec{'ipsec_monkeysphere_cert':
-      command => "monkeysphere-host import-key ${strongswan::config_dir}/private/${::fqdn}.pem ike://${::fqdn} && gpg --homedir /var/lib/monkeysphere/host -a --export =ike://${::fqdn} > ${strongswan::config_dir}/certs/${::fqdn}.asc",
-      creates => "${strongswan::config_dir}/certs/${::fqdn}.asc",
-  }
+      command => "monkeysphere-host import-key ${strongswan::crt_dir}/private/${::fqdn}.pem ike://${::fqdn} && gpg --homedir /var/lib/monkeysphere/host -a --export =ike://${::fqdn} > ${strongswan::cert_dir}/certs/${::fqdn}.asc",
+      creates => "${strongswan::cert_dir}/certs/${::fqdn}.asc",
+  } -> anchor{'strongswan::certs::done': }
 
   File {
     require => Package['strongswan'],

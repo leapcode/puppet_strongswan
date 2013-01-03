@@ -7,9 +7,9 @@ conn %default
         ikelifetime=60m
         keylife=20m
         rekeymargin=3m
-        keyingtries=1
-        mobike=no
+        keyingtries=3
         keyexchange=ikev2
+        mobike=no
         rightsendcert=never
         leftsendcert=never
         left=<%= scope.lookupvar('strongswan::default_left_ip_address') %>

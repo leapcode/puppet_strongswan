@@ -1,3 +1,4 @@
+# strongswan on centos six
 class strongswan::centos::six inherits strongswan::base {
   Service['ipsec']{
     name => 'strongswan',

@@ -26,7 +26,7 @@ class strongswan::base {
     # this is needed because if the glob-include in the config
     # doesn't find anything it fails.
     "${strongswan::config_dir}/hosts":
-      ensure => directory,
+      ensure  => directory,
       purge   => true,
       force   => true,
       recurse => true;

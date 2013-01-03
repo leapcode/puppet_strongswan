@@ -1,6 +1,7 @@
 # configure a simple remote host
 define strongswan::remote_host(
   $right_ip_address,
+  $right_subnet       = [],
   $ensure             = 'present',
   $right_id           = $name,
   $right_cert_name    = $name,

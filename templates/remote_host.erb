@@ -3,6 +3,9 @@ conn <%= name %>
         right=<%= right_ip_address %>
         rightid=@<%= right_id %>
         rightcert=<%= right_cert_name %>.asc
+<% unless right_subnet.empty? -%>
+        rightsubnet=<%= right_subnet.join(',') %>
+<% end -%>
         type=transport
         auto=start
 

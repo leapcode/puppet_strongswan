@@ -4,7 +4,7 @@ Facter.add("strongswan_cert") do
     if d = ['/etc/ipsec.d','/etc/strongswan/ipsec.d'].find{|d| File.exists?(File.join(d,cert_path)) } 
       File.read(File.join(d,cert_path))
     else
-      false
+      nil
     end
   end
 end

@@ -43,6 +43,18 @@ class strongswan(
     }
   }
 
+  if $auto_remote_host and ($::strongswan_cert != 'false') and ($::strongswan_cert != '') {
+    # export myself
+    @@strongswan::remote_host{$::fqdn:
+      right_cert_content  => $::strongswan_cert,
+      right_ip_address    => $strongswan::default_left_ip_address,
+      right_subnet        => $strongswan::default_left_subnet,
+      tag                 => 'strongswan_auto'
+    }
+    # collect all other auto exported except myself
+    Strongswan::Remote_Host<<| tag == 'strongswan_auto' and title != $::fqdn |>>
+  }
+
   if $manage_shorewall {
     class{'shorewall::rules::ipsec':
       source => $strongswan::shorewall_source

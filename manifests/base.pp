@@ -40,17 +40,4 @@ class strongswan::base {
     ensure => running,
     enable => true,
   }
-
-  if $strongswan::auto_remote_host and ($::strongswan_cert != 'false') and ($::strongswan_cert != '') {
-    # export
-    @@strongswan::remote_host{$::fqdn:
-      right_cert_content  => $::strongswan_cert,
-      right_ip_address    => $strongswan::default_left_ip_address,
-      right_subnet        => $strongswan::default_left_subnet,
-      tag                 => $::fqdn
-    }
-    #Strongswan::Remote_Host<<| tag == 'auto' and tag != $::fqdn |>>
-    Strongswan::Remote_Host<<| tag != $::fqdn |>>
-  }
-
 }

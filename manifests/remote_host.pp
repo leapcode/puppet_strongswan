@@ -3,6 +3,9 @@ define strongswan::remote_host(
   $right_ip_address,
   $right_subnet       = [],
   $ensure             = 'present',
+  $left_id            = 'absent',
+  $left_ip_address    = 'absent',
+  $left_subnet        = [],
   $right_id           = $name,
   $right_cert_name    = $name,
   $right_cert_content = 'absent'

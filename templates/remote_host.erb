@@ -1,5 +1,14 @@
 # host <%= name %>
 conn <%= name %>
+<% if left_ip_address != 'absent' -%>
+        left=<%= left_ip_address %>
+<% end -%>
+<% if left_id != 'absent' -%>
+        leftid=<%= left_id %>
+<% end -%>
+<% unless left_subnet.empty? %>
+        leftsubnet=<%= left_subnet.collect{|s| s.include?('/') ? s : (s.include?(':') ? "#{s}/128" : "#{s}/32" ) }.join(',') %>
+<% end -%>
         right=<%= right_ip_address %>
         rightid=@<%= right_id %>
         rightcert=<%= right_cert_name %>.asc

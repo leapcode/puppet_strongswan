@@ -1,4 +1,5 @@
 # host <%= name %>
+<% if scope.lookupvar('::fqdn') != left_id -%>
 conn <%= name %>
 <% if left_ip_address != 'absent' -%>
         left=<%= left_ip_address %>
@@ -17,4 +18,8 @@ conn <%= name %>
 <% end -%>
         type=transport
         auto=start
-
+<% else -%>
+# placeholder to not add ourself to the hostlist
+# this is due to a limitations how puppet can collect
+# exported resources
+<% end -%>

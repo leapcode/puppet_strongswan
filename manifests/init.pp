@@ -51,8 +51,9 @@ class strongswan(
       right_subnet        => $strongswan::default_left_subnet,
       tag                 => 'strongswan_auto'
     }
-    # collect all other auto exported except myself
-    Strongswan::Remote_Host<<| tag == 'strongswan_auto' and title != $::fqdn |>>
+    # collect all other auto exported
+    # myself is excluded in the template
+    Strongswan::Remote_Host<<| tag == 'strongswan_auto' |>>
   }
 
   if $manage_shorewall {

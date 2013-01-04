@@ -1,5 +1,5 @@
 # host <%= name %>
-<% if scope.lookupvar('::fqdn') != left_id -%>
+<% if !(left_id =~ scope.lookupvar('::fqdn')) -%>
 conn <%= name %>
 <% if left_ip_address != 'absent' -%>
         left=<%= left_ip_address %>

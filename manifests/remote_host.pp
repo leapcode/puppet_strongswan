@@ -25,15 +25,17 @@ define strongswan::remote_host(
     }
   }
 
-  strongswan::cert{$name: }
-  if ($right_cert_content != 'absent') and ($ensure == 'present') {
-    Strongswan::Cert[$name]{
-      ensure  => $ensure,
-      cert    => $right_cert_content,
-    }
-  } else {
-    Strongswan::Cert[$name]{
-      ensure => 'absent',
+  if $right_cert_content != 'unmanaged' {
+    strongswan::cert{$right_cert_name: }
+    if ($right_cert_content != 'absent') and ($ensure == 'present') {
+      Strongswan::Cert[$right_cert_name]{
+        ensure  => $ensure,
+        cert    => $right_cert_content,
+      }
+    } else {
+      Strongswan::Cert[$right_cert_name]{
+        ensure => 'absent',
+      }
     }
   }
 }

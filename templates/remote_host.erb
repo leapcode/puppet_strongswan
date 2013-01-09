@@ -5,7 +5,7 @@ conn <%= name %>
         left=<%= left_ip_address %>
 <% end -%>
 <% if left_id != 'absent' -%>
-        leftid=<%= left_id %>
+        leftid=@<%= left_id %>
 <% end -%>
 <% unless left_subnet.empty? %>
         leftsubnet=<%= left_subnet.collect{|s| s.include?('/') ? s : (s.include?(':') ? "#{s}/128" : "#{s}/32" ) }.join(',') %>

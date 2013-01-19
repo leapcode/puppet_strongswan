@@ -5,5 +5,10 @@ class strongswan::centos::five inherits strongswan::base {
       ensure => installed,
       before => Service['ipsec'],
     }
+
+    selinux::fcontext{
+      '/var/run/charon.ctl':
+        setype => 'ipsec_var_run_t';
+    }
   }
 }

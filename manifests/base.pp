@@ -39,6 +39,10 @@ class strongswan::base {
       content => "#!/bin/bash\n${strongswan::binary} status | grep ESTABLISHED | awk -F\\[ '{ print \$1 }'\n",
       notify  => undef,
       mode    => '0500';
+    "/usr/local/sbin/${binary_name}_start_unconnected":
+      content => template('strongswan/scripts/start_unconnected.sh.erb'),
+      notify  => undef,
+      mode    => '0500';
   }
 
   service{'ipsec':

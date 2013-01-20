@@ -1,0 +1,8 @@
+#!/bin/bash
+connected=`<%= scope.lookupvar('strongswan::base::binary_name') %>_connected_hosts`
+grep -El '^conn' /etc/ipsec.d/hosts/* | while read line; do
+  host=`basename $line '.conf'`
+  echo $connected | grep -q $host
+  [ $? -gt 0 ] && <%= scope.lookupvar('strongswan::base::binary_name') %> up $host
+done
+

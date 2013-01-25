@@ -3,6 +3,7 @@ class strongswan::base {
 
   package{'strongswan':
     ensure => installed,
+    require => Package['monkeysphere','gnutls-utils'];
   } -> exec{
     'ipsec_privatekey':
       command => "certtool --generate-privkey --bits 2048 --outfile ${strongswan::cert_dir}/private/${::fqdn}.pem",

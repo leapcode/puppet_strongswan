@@ -1,5 +1,5 @@
 # manage a cert snippet that we want to include
-define strongswan::cert(
+define strongswan::cert (
   $ensure = 'present',
   $cert   = 'absent'
 ) {
@@ -7,7 +7,7 @@ define strongswan::cert(
     fail("You need to pass some \$cert content for ${name} if it should be present")
   }
 
-  file{"${strongswan::cert_dir}/certs/${name}.asc":
+  file { "${strongswan::cert_dir}/certs/${name}.asc":
     ensure  => $ensure,
     require => Package['strongswan'],
     notify  => Service['ipsec'],

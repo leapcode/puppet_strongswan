@@ -10,7 +10,7 @@ define strongswan::remote_host(
   $right_cert_name    = $name,
   $right_cert_content = 'absent'
 ){
-  file{"${strongswan::config_dir}/hosts/${name}.conf":
+  file { "${strongswan::config_dir}/hosts/${name}.conf":
     ensure  => $ensure,
     require => Package['strongswan'],
     notify  => Service['ipsec'],
@@ -26,7 +26,7 @@ define strongswan::remote_host(
   }
 
   if $right_cert_content != 'unmanaged' {
-    strongswan::cert{$right_cert_name: }
+    strongswan::cert { $right_cert_name: }
     if ($right_cert_content != 'absent') and ($ensure == 'present') {
       Strongswan::Cert[$right_cert_name]{
         ensure  => $ensure,

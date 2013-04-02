@@ -1,14 +1,15 @@
 # manage strongswan services
 class strongswan::base {
 
-  package{'strongswan':
-    ensure => installed,
+  package { 'strongswan':
+    ensure  => installed,
     require => Package['monkeysphere','gnutls-utils'];
-  } -> exec{
+  } -> exec {
     'ipsec_privatekey':
       command => "certtool --generate-privkey --bits 2048 --outfile ${strongswan::cert_dir}/private/${::fqdn}.pem",
       creates => "${strongswan::cert_dir}/private/${::fqdn}.pem";
-  } -> exec{'ipsec_monkeysphere_cert':
+  } -> exec {
+    'ipsec_monkeysphere_cert':
       command => "monkeysphere-host import-key ${strongswan::cert_dir}/private/${::fqdn}.pem ike://${::fqdn} && gpg --homedir /var/lib/monkeysphere/host -a --export =ike://${::fqdn} > ${strongswan::cert_dir}/certs/${::fqdn}.asc",
       creates => "${strongswan::cert_dir}/certs/${::fqdn}.asc",
   } -> anchor{'strongswan::certs::done': }
@@ -46,7 +47,7 @@ class strongswan::base {
       mode    => '0500';
   }
 
-  service{'ipsec':
+  service { 'ipsec':
     ensure => running,
     enable => true,
   }

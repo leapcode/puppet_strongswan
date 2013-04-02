@@ -10,9 +10,9 @@ class strongswan(
   $auto_remote_host         = false
 ) {
 
-  class{'monkeysphere':
+  class { 'monkeysphere':
     publish_key => $monkeysphere_publish_key
-  } -> class{'certtool': }
+  } -> class { 'certtool': }
 
   case $::operatingsystem {
     centos: {
@@ -22,7 +22,7 @@ class strongswan(
           $cert_dir   = '/etc/ipsec.d'
           $binary     = '/usr/sbin/ipsec'
 
-          class{'strongswan::centos::five':
+          class { 'strongswan::centos::five':
             require => Class['monkeysphere'],
           }
         }
@@ -30,7 +30,7 @@ class strongswan(
           $config_dir = '/etc/strongswan'
           $cert_dir   = '/etc/strongswan/ipsec.d'
           $binary     = '/usr/sbin/strongswan'
-          class{'strongswan::centos::six':
+          class { 'strongswan::centos::six':
             require => Class['monkeysphere'],
           }
         }
@@ -40,7 +40,7 @@ class strongswan(
       $config_dir = '/etc/ipsec.d'
       $cert_dir   = '/etc/ipsec.d'
       $binary     = '/usr/sbin/ipsec'
-      class{'strongswan::base':
+      class { 'strongswan::base':
         require => Class['monkeysphere'],
       }
     }
@@ -48,7 +48,7 @@ class strongswan(
 
   if $auto_remote_host and ($::strongswan_cert != 'false') and ($::strongswan_cert != '') {
     # export myself
-    @@strongswan::remote_host{$::fqdn:
+    @@strongswan::remote_host { $::fqdn:
       right_cert_content  => $::strongswan_cert,
       right_ip_address    => $strongswan::default_left_ip_address,
       right_subnet        => $strongswan::default_left_subnet,
@@ -60,7 +60,7 @@ class strongswan(
   }
 
   if $manage_shorewall {
-    class{'shorewall::rules::ipsec':
+    class { 'shorewall::rules::ipsec':
       source => $strongswan::shorewall_source
     }
     if $ipsec_nat {

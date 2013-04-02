@@ -2,6 +2,7 @@
 class strongswan(
   $manage_shorewall         = false,
   $shorewall_source         = 'net',
+  $use_monkeysphere         = false,
   $monkeysphere_publish_key = false,
   $ipsec_nat                = false,
   $default_left_ip_address  = $::ipaddress,
@@ -10,9 +11,16 @@ class strongswan(
   $auto_remote_host         = false
 ) {
 
-  class { 'monkeysphere':
-    publish_key => $monkeysphere_publish_key
-  } -> class { 'certtool': }
+  if $use_monkeysphere != false {
+    class { 'monkeysphere':
+      publish_key => $monkeysphere_publish_key
+    } -> class { 'certtool': }
+
+    $require_monkeysphere = $use_monkeysphere ? {
+      true  => 'Class['monkeysphere']',
+      false => ''
+    }
+  }
 
   case $::operatingsystem {
     centos: {
@@ -23,7 +31,7 @@ class strongswan(
           $binary     = '/usr/sbin/ipsec'
 
           class { 'strongswan::centos::five':
-            require => Class['monkeysphere'],
+            require => $require_monkeysphere
           }
         }
         default: {
@@ -31,7 +39,7 @@ class strongswan(
           $cert_dir   = '/etc/strongswan/ipsec.d'
           $binary     = '/usr/sbin/strongswan'
           class { 'strongswan::centos::six':
-            require => Class['monkeysphere'],
+            require => $require_monkeysphere
           }
         }
       }
@@ -41,7 +49,7 @@ class strongswan(
       $cert_dir   = '/etc/ipsec.d'
       $binary     = '/usr/sbin/ipsec'
       class { 'strongswan::base':
-        require => Class['monkeysphere'],
+        require => $require_monkeysphere
       }
     }
   }

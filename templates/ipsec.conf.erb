@@ -13,8 +13,8 @@ conn %default
         rightsendcert=never
         leftsendcert=never
         left=<%= scope.lookupvar('strongswan::default_left_ip_address') %>
-        leftcert=<%= scope.lookupvar('custom_hostname') %>.asc
-        leftid=@<%= scope.lookupvar('custom_hostname') %>
+        leftcert=<%= scope.lookupvar('strongswan::custom_hostname') %>.asc
+        leftid=@<%= scope.lookupvar('strongswan::custom_hostname') %>
 <% unless (subn=scope.lookupvar('strongswan::default_left_subnet')).empty? -%>
         leftsubnet=<%= subn.collect{|s| s.include?('/') ? s : (s.include?(':') ? "#{s}/128" : "#{s}/32" ) }.join(',') %>
 <% end -%>

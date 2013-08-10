@@ -6,8 +6,8 @@ class strongswan::base {
     } ->
 
     exec { 'ipsec_privatekey':
-      command => "certtool --generate-privkey --bits 2048 --outfile ${strongswan::cert_dir}/private/${custom_hostname}.pem",
-      creates => "${strongswan::cert_dir}/private/${custom_hostname}.pem";
+      command => "certtool --generate-privkey --bits 2048 --outfile ${strongswan::cert_dir}/private/${strongswan::custom_hostname}.pem",
+      creates => "${strongswan::cert_dir}/private/${strongswan::custom_hostname}.pem";
     } ->
 
     anchor{'strongswan::certs::done': }
@@ -19,8 +19,8 @@ class strongswan::base {
       }
 
       exec { 'ipsec_monkeysphere_cert':
-        command => "monkeysphere-host import-key ${strongswan::cert_dir}/private/${custom_hostname}.pem ike://${custom_hostname} && gpg --homedir /var/lib/monkeysphere/host -a --export =ike://${custom_hostname} > ${strongswan::cert_dir}/certs/${custom_hostname}.asc",
-        creates => "${strongswan::cert_dir}/certs/${custom_hostname}.asc",
+        command => "monkeysphere-host import-key ${strongswan::cert_dir}/private/${strongswan::custom_hostname}.pem ike://${strongswan::custom_hostname} && gpg --homedir /var/lib/monkeysphere/host -a --export =ike://${strongswan::custom_hostname} > ${strongswan::cert_dir}/certs/${strongswan::custom_hostname}.asc",
+        creates => "${strongswan::cert_dir}/certs/${strongswan::custom_hostname}.asc",
         require => Exec['ipsec_privatekey'],
         before  => Anchor['strongswan::certs::done'],
       }
@@ -37,7 +37,7 @@ class strongswan::base {
   $binary_name = basename($strongswan::binary)
   file{
     '/etc/ipsec.secrets':
-      content => ": RSA ${custom_hostname}.pem\n";
+      content => ": RSA ${strongswan::custom_hostname}.pem\n";
     # this is needed because if the glob-include in the config
     # doesn't find anything it fails.
     "${strongswan::config_dir}/hosts":

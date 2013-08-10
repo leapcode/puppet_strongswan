@@ -58,7 +58,7 @@ class strongswan(
 
   if $auto_remote_host and ($::strongswan_cert != 'false') and ($::strongswan_cert != '') {
     # export myself
-    @@strongswan::remote_host { $custom_hostname:
+    @@strongswan::remote_host { $strongswan::custom_hostname:
       right_cert_content  => $::strongswan_cert,
       right_ip_address    => $strongswan::default_left_ip_address,
       right_subnet        => $strongswan::default_left_subnet,

@@ -17,7 +17,7 @@ class strongswan(
     } -> class { 'certtool': }
 
     $require_monkeysphere = $use_monkeysphere ? {
-      true  => 'Class['monkeysphere']',
+      true  => Class['monkeysphere'],
       false => ''
     }
   }

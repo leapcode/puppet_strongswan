@@ -7,13 +7,18 @@ conn <%= name %>
 <% if left_id != 'absent' -%>
         leftid=@<%= left_id %>
 <% end -%>
-<% unless left_subnet.empty? %>
+<% unless left_subnet.empty? -%>
         leftsubnet=<%= left_subnet.collect{|s| s.include?('/') ? s : (s.include?(':') ? "#{s}/128" : "#{s}/32" ) }.join(',') %>
 <% end -%>
         right=<%= right_ip_address %>
         rightid=@<%= right_id %>
         rightcert=<%= right_cert_name %>.asc
-<% unless right_subnet.empty? -%>
+<% if right_subnet.empty? -%>
+  <% unless (subn=scope.lookupvar('strongswan::default_left_subnet')).empty? -%>
+        # Override the public subnet definition for the internal links
+        rightsubnet=<%= right_ip_address %>/32
+  <% end %>
+<% else -%>
         rightsubnet=<%= right_subnet.collect{|s| s.include?('/') ? s : (s.include?(':') ? "#{s}/128" : "#{s}/32" ) }.join(',') %>
 <% end -%>
         type=transport

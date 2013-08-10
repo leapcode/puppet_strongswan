@@ -50,7 +50,7 @@ class strongswan::base {
     '/etc/ipsec.conf':
       content => template($strongswan::ipsec_conf_template);
     "/usr/local/sbin/${binary_name}_connected_hosts":
-      content => "#!/bin/bash\n${strongswan::binary} status | grep ESTABLISHED | awk -F\\[ '{ print \$1 }'\n",
+      content => "#!/bin/bash\n${strongswan::binary} status | grep INSTALLED | awk -F\\{ '{ print \$1 }'\n",
       notify  => undef,
       mode    => '0500';
     "/usr/local/sbin/${binary_name}_start_unconnected":

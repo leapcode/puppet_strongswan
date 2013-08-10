@@ -8,7 +8,8 @@ class strongswan(
   $default_left_ip_address  = $::ipaddress,
   $default_left_subnet      = reject(split($::strongswan_ips,','),$::ipaddress),
   $additional_options       = '',
-  $auto_remote_host         = false
+  $auto_remote_host         = false,
+  $ipsec_conf_template      = 'strongswan/ipsec.conf.erb'
 ) {
 
   if $use_monkeysphere != false {

@@ -44,7 +44,7 @@ class strongswan::base {
     "${strongswan::config_dir}/hosts/__dummy__.conf":
       ensure  => 'present';
     '/etc/ipsec.conf':
-      content => template('strongswan/ipsec.conf.erb');
+      content => template($strongswan::ipsec_conf_template);
     "/usr/local/sbin/${binary_name}_connected_hosts":
       content => "#!/bin/bash\n${strongswan::binary} status | grep ESTABLISHED | awk -F\\[ '{ print \$1 }'\n",
       notify  => undef,

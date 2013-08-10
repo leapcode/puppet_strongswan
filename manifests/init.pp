@@ -60,8 +60,8 @@ class strongswan(
   }
 
   if $manage_shorewall {
-    class{'shorewall::rules::ipsec':
-      source => $strongswan::shorewall_source
+    shorewall::rules::ipsec{
+      $strongswan::shorewall_source:
     }
     if $ipsec_nat {
       include shorewall::rules::ipsec_nat

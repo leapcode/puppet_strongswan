@@ -9,7 +9,8 @@ class strongswan(
   $default_left_subnet      = reject(split($::strongswan_ips,','),$::ipaddress),
   $additional_options       = '',
   $auto_remote_host         = false,
-  $ipsec_conf_template      = 'strongswan/ipsec.conf.erb'
+  $ipsec_conf_template      = 'strongswan/ipsec.conf.erb',
+  $custom_hostname          = $::fqdn
 ) {
 
   if $use_monkeysphere != false {
@@ -57,7 +58,7 @@ class strongswan(
 
   if $auto_remote_host and ($::strongswan_cert != 'false') and ($::strongswan_cert != '') {
     # export myself
-    @@strongswan::remote_host { $::fqdn:
+    @@strongswan::remote_host { $custom_hostname:
       right_cert_content  => $::strongswan_cert,
       right_ip_address    => $strongswan::default_left_ip_address,
       right_subnet        => $strongswan::default_left_subnet,

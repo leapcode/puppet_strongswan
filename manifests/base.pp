@@ -53,6 +53,10 @@ class strongswan::base {
       content => "#!/bin/bash\n${strongswan::binary} status | grep INSTALLED | awk -F\\{ '{ print \$1 }'\n",
       notify  => undef,
       mode    => '0500';
+    "/usr/local/sbin/${binary_name}_info":
+      content => template('strongswan/scripts/info.sh.erb'),
+      notify  => undef,
+      mode    => '0500';
     "/usr/local/sbin/${binary_name}_start_unconnected":
       content => template('strongswan/scripts/start_unconnected.sh.erb'),
       notify  => undef,

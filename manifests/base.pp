@@ -1,25 +1,29 @@
 # manage strongswan services
 class strongswan::base {
 
-  if $use_monkeysphere {
     package { 'strongswan':
       ensure  => installed,
-      require => Package['monkeysphere','gnutls-utils'],
-      } ->
+    } ->
 
-      exec { 'ipsec_privatekey':
-        command => "certtool --generate-privkey --bits 2048 --outfile ${strongswan::cert_dir}/private/${::fqdn}.pem",
-        creates => "${strongswan::cert_dir}/private/${::fqdn}.pem";
-      } ->
+    exec { 'ipsec_privatekey':
+      command => "certtool --generate-privkey --bits 2048 --outfile ${strongswan::cert_dir}/private/${::fqdn}.pem",
+      creates => "${strongswan::cert_dir}/private/${::fqdn}.pem";
+    } ->
+
+    anchor{'strongswan::certs::done': }
+
+    if $use_monkeysphere {
+
+      Package['strongswan'] {
+        require => Package['monkeysphere','gnutls-utils'],
+      }
 
       exec { 'ipsec_monkeysphere_cert':
         command => "monkeysphere-host import-key ${strongswan::cert_dir}/private/${::fqdn}.pem ike://${::fqdn} && gpg --homedir /var/lib/monkeysphere/host -a --export =ike://${::fqdn} > ${strongswan::cert_dir}/certs/${::fqdn}.asc",
         creates => "${strongswan::cert_dir}/certs/${::fqdn}.asc",
-        } -> anchor{'strongswan::certs::done': }
-  } else {
-    package { 'strongswan':
-      ensure  => installed,
-    }
+        require => Exec['ipsec_privatekey'],
+        before  => Anchor['strongswan::certs::done'],
+      }
   }
 
   File {
